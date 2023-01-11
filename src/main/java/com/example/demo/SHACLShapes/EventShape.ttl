@@ -1,0 +1,68 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+schema:Event
+    a sh:NodeShape ;
+    sh:targetClass schema:Event ;
+    sh:property [
+        sh:path schema:startDate ;
+        sh:or (
+      [
+        sh:datatype xsd:date ;
+      ]
+      [
+        sh:datatype xsd:dateTime ;
+      ]
+    ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "start date" ;
+    ] ;
+
+  sh:property [
+        sh:path schema:endDate ;
+        sh:or (
+      [
+        sh:datatype xsd:date ;
+      ]
+      [
+        sh:datatype xsd:dateTime ;
+      ]
+    ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "end date" ;
+    ] ;
+  sh:property [
+        sh:path schema:startTime ;
+        sh:or (
+      [
+        sh:datatype xsd:time ;
+      ]
+      [
+        sh:datatype xsd:dateTime ;
+      ]
+    ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "start date" ;
+    ] ;
+
+  sh:property [
+        sh:path schema:endTime ;
+        sh:or (
+      [
+        sh:datatype xsd:time ;
+      ]
+      [
+        sh:datatype xsd:dateTime ;
+      ]
+    ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "end time" ;
+    ] .
