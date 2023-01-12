@@ -56,7 +56,7 @@ public class PublishICSCalendarData {
                 id = j + 1;
                 break;
             }
-            String baseUrl =  "https://territoire.emse.fr/ldp/arunraveendransheelafinal/" ;
+            String baseUrl =  "https://territoire.emse.fr/ldp/arunfinal/" ;
 
 
             Resource iri = model.createResource("/" + stringIdentifier + id );

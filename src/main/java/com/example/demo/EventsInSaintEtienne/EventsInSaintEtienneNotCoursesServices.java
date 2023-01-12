@@ -5,6 +5,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,7 +48,7 @@ public class EventsInSaintEtienneNotCoursesServices {
                 "?obj schema:address ?address . \n" +
                 "\n" +
                 "?address  schema:addressLocality ?cityName .\n" +
-                "FILTER (?editor = \"Arun\"@en && ?cityName = \"Saint-Étienne\" && regex(?serialNumber,\"saintetiennewebevent\", \"i\")) .\n" +
+                "FILTER (?editor = \"Arun\"@en && ?cityName = \"Saint-Étienne\" && regex(?serialNumber,\"sem-\", \"i\")) .\n" +
                 "FILTER NOT EXISTS { ?uri rdf:type schema:CourseInstance .}\n" +
                 "}";
         writer.write(query);
@@ -76,6 +77,8 @@ public class EventsInSaintEtienneNotCoursesServices {
 
         String xsd = "http://www.w3.org/2001/XMLSchema#" ;
         model.setNsPrefix("xsd", xsd);
+        String owl = "http://www.w3.org/2002/07/owl#" ;
+        model.setNsPrefix("owl", owl);
 
         String sub = "http://localhost:8080/Event/saintetienne/notcourses";
         Resource subUrl  =  model.createResource(sub);
@@ -91,10 +94,10 @@ public class EventsInSaintEtienneNotCoursesServices {
                 blankNode.addProperty(ResourceFactory.createProperty(schema + "event"), blankNode1) ;
                 blankNode1.addProperty(RDF.type, ResourceFactory.createProperty(schema + "Event"));
                 blankNode1.addProperty(ResourceFactory.createProperty(schema + "url"), model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI));
-                blankNode1.addProperty(ResourceFactory.createProperty(schema + "sameAs"), model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString(), XSDDatatype.XSDanyURI));
+                blankNode1.addProperty(OWL.sameAs, model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString(), XSDDatatype.XSDanyURI));
 
             }else {
-                model.add(model.listSubjectsWithProperty(ResourceFactory.createProperty(schema + "url"),model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI)).toList().get(0),ResourceFactory.createProperty(schema + "sameAs") ,  model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString(), XSDDatatype.XSDanyURI));
+                model.add(model.listSubjectsWithProperty(ResourceFactory.createProperty(schema + "url"),model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI)).toList().get(0), OWL.sameAs ,  model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString(), XSDDatatype.XSDanyURI));
                 //blankNode1.addProperty(ResourceFactory.createProperty(schema + "sameAs"), model.createResource(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString()));
             }
 

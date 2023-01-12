@@ -32,7 +32,7 @@ public class SHACLOrganizerValidatorService {
         Shapes shapes = Shapes.parse(shapesGraph);
 
 
-        URL url = new URL("https://territoire.emse.fr/ldp/arunraveendransheelafinal/" + serialNumber + "/");
+        URL url = new URL("https://territoire.emse.fr/ldp/arunfinal/" + serialNumber + "/");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("GET");
 

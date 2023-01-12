@@ -41,7 +41,7 @@ public class WebScrapperRDFExtractor {
                 id = j + 1;
                 break;
             }
-            String baseUrl = "https://territoire.emse.fr/ldp/arunraveendransheelafinal/";
+            String baseUrl = "https://territoire.emse.fr/ldp/arunfinal/";
 
             String test  = "/arun" ;
 
