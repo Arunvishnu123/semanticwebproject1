@@ -14,6 +14,7 @@ import java.util.Collections;
 public class SwaggerConfiguration {
 
 
+
     private ApiInfo apiInfo(){
         return new ApiInfo(
                 "Semantic Web Project",
