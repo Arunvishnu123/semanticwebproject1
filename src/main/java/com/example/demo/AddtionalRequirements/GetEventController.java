@@ -15,9 +15,17 @@ public class GetEventController {
     @Autowired
     private GetAllEventsInSelectedRoom getAllEventsInSelectedRoom;
 
+    @Autowired
+    private GetAllAttendeesOfAnEvent getAllAttendeesOfAnEvent;
+
 
     @GetMapping(value="/{roomNumber}", produces={"text/turtle"})
     public String eventInRoom(@PathVariable("roomNumber") String roomNumber) throws IOException {
         return getAllEventsInSelectedRoom.getAllEventsInTheSelectedRoom(roomNumber);
+    }
+
+    @GetMapping(value="/course/attendees", produces={"text/turtle"})
+    public String getAttendeesOfAEvents(AttendeeModel attendeeModel) throws IOException {
+        return getAllAttendeesOfAnEvent.getAttendeeListOfAnEvent(attendeeModel.getCourseName(),attendeeModel.getDate());
     }
 }
