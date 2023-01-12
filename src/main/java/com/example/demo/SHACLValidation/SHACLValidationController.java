@@ -18,12 +18,12 @@ public class SHACLValidationController {
     @Autowired
     private SHACLOrganizerValidatorService shaclOrganizerValidatorService;
 
-    @GetMapping(value="/event/{id}", produces={"text/turtle"})
+    @GetMapping(value="/eventValidation/event/{id}", produces={"text/turtle"})
     public String eventValidation(@PathVariable("id") String serialNumber) throws IOException {
         return  shaclEventValidationService.eventValidation(serialNumber);
     }
 
-    @GetMapping(value="/event/{id}", produces={"text/turtle"})
+    @GetMapping(value="/organizerValidation/event/{id}", produces={"text/turtle"})
     public String organizerValidation(@PathVariable("id") String serialNumber) throws IOException {
         return  shaclOrganizerValidatorService.organizerValidator(serialNumber);
     }

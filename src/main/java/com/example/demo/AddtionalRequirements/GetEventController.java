@@ -1,6 +1,5 @@
 package com.example.demo.AddtionalRequirements;
 
-import com.example.demo.AddAttendees.AddAttendeesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +10,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping(path = "getEvents/")
-public class EventController {
+public class GetEventController {
 
     @Autowired
     private GetAllEventsInSelectedRoom getAllEventsInSelectedRoom;

@@ -31,7 +31,7 @@ public class SHACLEventValidationService {
         Shapes shapes = Shapes.parse(shapesGraph);
 
 
-        URL url = new URL("https://territoire.emse.fr/ldp/aruntest23/" + serialNumber + "/");
+        URL url = new URL("https://territoire.emse.fr/ldp/arunraveendransheelafinal/" + serialNumber + "/");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("GET");
 

@@ -71,8 +71,9 @@ public class UpcomingEventService {
         String rdfs = "http://www.w3.org/2000/01/rdf-schema" ;
         model.setNsPrefix("rdfs", rdfs);
 
-        String xsd = "http://www.w3.org/2001/XMLSchema" ;
+        String xsd = "http://www.w3.org/2001/XMLSchema#" ;
         model.setNsPrefix("xsd", xsd);
+
 
         String sub = "http://localhost:8080/upcomingevents/" + selectedDate ;
         Resource subUrl  =  model.createResource(sub);
@@ -95,7 +96,7 @@ public class UpcomingEventService {
                 blankNode1.addProperty(ResourceFactory.createProperty(schema + "sameAs"), model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString(), XSDDatatype.XSDanyURI));
 
             }else {
-                model.add(model.listSubjectsWithProperty(ResourceFactory.createProperty(schema + "url"),model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI)).toList().get(0),ResourceFactory.createProperty(schema + "sameAs") ,  model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI));
+                model.add(model.listSubjectsWithProperty(ResourceFactory.createProperty(schema + "url"),model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI)).toList().get(0),ResourceFactory.createProperty(schema + "sameAs") ,  model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString(), XSDDatatype.XSDanyURI));
                 //blankNode1.addProperty(ResourceFactory.createProperty(schema + "sameAs"), model.createResource(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString()));
             }
 

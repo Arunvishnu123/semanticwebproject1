@@ -27,12 +27,12 @@ public class SHACLOrganizerValidatorService {
     public String organizerValidator(String serialNumber) throws IOException {
 
 
-        String shape = "C:\\Users\\ARUN\\OneDrive\\Desktop\\semanticwebproject\\demo\\src\\main\\java\\com\\example\\demo\\SHACLShapes\\CourseShape.ttls" ;
+        String shape = "C:\\Users\\ARUN\\OneDrive\\Desktop\\semanticwebproject\\demo\\src\\main\\java\\com\\example\\demo\\SHACLShapes\\CourseShape.ttl" ;
         Graph shapesGraph = RDFDataMgr.loadGraph(shape);
         Shapes shapes = Shapes.parse(shapesGraph);
 
 
-        URL url = new URL("https://territoire.emse.fr/ldp/aruntest23/" + serialNumber + "/");
+        URL url = new URL("https://territoire.emse.fr/ldp/arunraveendransheelafinal/" + serialNumber + "/");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("GET");
 
