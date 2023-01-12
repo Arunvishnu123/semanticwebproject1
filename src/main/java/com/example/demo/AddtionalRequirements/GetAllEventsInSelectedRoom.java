@@ -1,4 +1,4 @@
-package com.example.demo.UpcomingEvents;
+package com.example.demo.AddtionalRequirements;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
@@ -6,6 +6,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,12 @@ import java.net.URL;
 import java.util.Scanner;
 
 @Service
-public class UpcomingEventService {
-    public  String upcomingEvents(String selectedDate) throws IOException {
+public class GetAllEventsInSelectedRoom {
+
+    public String getAllEventsInTheSelectedRoom(String roomNumber) throws IOException {
 
 
-        URL url = new URL("https://territoire.emse.fr/ldp/aruntest23/");
+        URL url = new URL("https://territoire.emse.fr/ldp/");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("POST");
 
@@ -34,19 +36,14 @@ public class UpcomingEventService {
         OutputStreamWriter writer = new OutputStreamWriter(httpConn.getOutputStream());
         String query =  String.format("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
                 "PREFIX schema: <http://schema.org/>\n" +
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "PREFIX ldp: <http://www.w3.org/ns/ldp#>\n" +
-                "PREFIX owl: <http://www.w3.org/2002/07/owl#>              \n" +
-                "select  ?uri  ?sameAs\n" +
-                "WHERE   \n" +
-                " {\n" +
-                "?uri a schema:CourseInstance;\n" +
-                "schema:editor ?editor ;\n" +
-                "schema:startDate ?startDate;\n" +
-                "schema:serialNumber ?serialNumber ; \n" +
-                "owl:sameAs ?sameAs ; \n" +
-                "FILTER (?editor = \"Arun\"@en && ?startDate > \"%s\"^^xsd:date && regex(?serialNumber,\"course-event\", \"i\")) .\n" +
-                " }", selectedDate);
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
+                "SELECT ?uri ?sameAs {  \n" +
+                " ?uri  schema:editor ?editor;\n" +
+                "        schema:location ?loc ;\n" +
+                "        owl:sameAs ?sameAs ;\n" +
+                "               schema:serialNumber ?serialNumber ; \n" +
+                "FILTER  (?editor = \"Arun\"@en && regex(str(?loc), \"%s\") && regex(?serialNumber, \"course-event-\", \"i\" ))\n" +
+                " }", roomNumber) ;
         writer.write(query);
         writer.flush();
         writer.close();
@@ -74,18 +71,16 @@ public class UpcomingEventService {
         String xsd = "http://www.w3.org/2001/XMLSchema" ;
         model.setNsPrefix("xsd", xsd);
 
-        String sub = "http://localhost:8080/upcomingevents/" + selectedDate ;
+        String sub = "http://localhost:8080/events/" + roomNumber ;
         Resource subUrl  =  model.createResource(sub);
         subUrl.addProperty(RDF.type, ResourceFactory.createProperty(schema + "EventSeries"));
 
         Resource blankNode =  model.createResource();
 
         subUrl.addProperty(ResourceFactory.createProperty(schema + "events"), blankNode) ;
-        subUrl.addProperty(ResourceFactory.createProperty(schema + "startDate"), model.createTypedLiteral(selectedDate, XSDDatatype.XSDdate));
-
-        subUrl.addProperty(ResourceFactory.createProperty(schema + "category"), model.createTypedLiteral("Upcoming Events", XSDDatatype.XSDstring));
-        subUrl.addProperty(ResourceFactory.createProperty(rdfs + "comment"), model.createTypedLiteral("Upcoming Events from the selected date by the user", XSDDatatype.XSDstring));
+        String test = null ;
         for (int i = 0, size = jsonArray.length(); i < size; i++) {
+
             if( model.listSubjectsWithProperty(ResourceFactory.createProperty(schema + "url"),model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI)).toList().isEmpty())
             {
                 Resource blankNode1 =  model.createResource();
@@ -98,17 +93,15 @@ public class UpcomingEventService {
                 model.add(model.listSubjectsWithProperty(ResourceFactory.createProperty(schema + "url"),model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI)).toList().get(0),ResourceFactory.createProperty(schema + "sameAs") ,  model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI));
                 //blankNode1.addProperty(ResourceFactory.createProperty(schema + "sameAs"), model.createResource(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString()));
             }
-
-            //subUrl.addProperty(ResourceFactory.createProperty(schema + "events"), model.createResource(jsonArray.getJSONObject(i).getJSONObject("subject").get("value").toString()));
         }
-
-
         model.write(System.out, "TURTLE");
-
         final ByteArrayOutputStream stringWriter = new ByteArrayOutputStream();
         model.write(stringWriter, "TURTLE");
 
 
         return stringWriter.toString();
+
+
+
     }
 }

@@ -38,7 +38,7 @@ public class WebScrapperRDFExtractor {
                 id = j + 1;
                 break;
             }
-            String baseUrl = "https://territoire.emse.fr/ldp/aruntest23/";
+            String baseUrl = "https://territoire.emse.fr/ldp/arunraveendransheelafinal/";
 
             String test  = "/arun" ;
 
@@ -56,6 +56,10 @@ public class WebScrapperRDFExtractor {
             RDFParser.fromString(jsonObject.toString()).forceLang(Lang.JSONLD).parse(model);
             url.addProperty(ResourceFactory.createProperty(schema + "serialNumber"), model.createTypedLiteral( stringIdentifier + id , XSDDatatype.XSDstring));
             url.addProperty(ResourceFactory.createProperty(schema + "editor"), model.createLiteral("Arun","en"));
+
+
+
+
 
             model.write(System.out,"TURTLE");
 

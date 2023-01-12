@@ -56,7 +56,7 @@ public class PublishICSCalendarData {
                 id = j + 1;
                 break;
             }
-            String baseUrl =  "https://territoire.emse.fr/ldp/aruntest23/" ;
+            String baseUrl =  "https://territoire.emse.fr/ldp/arunraveendransheelafinal/" ;
 
 
             Resource iri = model.createResource("/" + stringIdentifier + id );
@@ -67,6 +67,34 @@ public class PublishICSCalendarData {
             iri.addProperty(RDF.type,ResourceFactory.createProperty(schema + "Event"));
             if(component.getProperty(Property.DESCRIPTION).get().getValue().contains("CPS")){
                 iri.addProperty(RDF.type,ResourceFactory.createProperty(schema + "CourseInstance"));
+            }
+
+            if(component.getProperty(Property.LOCATION).get().getValue().contains("EMSE")){
+                iri.addProperty(ResourceFactory.createProperty(schema + "organizer"),model.createTypedLiteral("EMSE", XSDDatatype.XSDstring));
+                String lines[] = component.getProperty(Property.DESCRIPTION).get().getValue().split("\\r?\\n");
+                if(component.getProperty(Property.DESCRIPTION).get().getValue().contains("M1")){
+
+                    iri.addProperty(ResourceFactory.createProperty(schema + "instructor"), model.createLiteral(lines[4],"en"));
+                }else{
+                    iri.addProperty(ResourceFactory.createProperty(schema + "instructor"), model.createLiteral(lines[3],"en"));
+                }
+
+                try {
+                    String[] parts = component.getProperty(Property.LOCATION).get().getValue().split(",");
+                    iri.addProperty(ResourceFactory.createProperty(schema + "address"), component.getProperty(Property.LOCATION).get().getValue());
+                    System.out.println(component.getProperty(Property.LOCATION).get().getValue());
+                    for (int k = 0; k < parts.length; k++) {
+                        String numberOnly = parts[k].replaceAll("[^0-9]", "");
+                        if (numberOnly.length() == 3) {
+                            location  =  "https://territoire.emse.fr/kg/emse/fayol/" + numberOnly.charAt(0) + "ET/" + numberOnly ;
+                            iri.addProperty(ResourceFactory.createProperty(schema + "location"), model.createResource("https://territoire.emse.fr/kg/emse/fayol/" + numberOnly.charAt(0) + "ET/" + numberOnly));
+                        }
+                    }
+                }catch (Exception e){
+                    continue;
+                }
+            }else {
+                iri.addProperty(ResourceFactory.createProperty(schema + "location"), component.getProperty(Property.LOCATION).get().getValue());
             }
 
 
@@ -91,20 +119,8 @@ public class PublishICSCalendarData {
             iri.addProperty(ResourceFactory.createProperty(schema + "editor"), model.createLiteral("Arun","en"));
             iri.addProperty(ResourceFactory.createProperty(schema + "dateCreated"), model.createTypedLiteral(component.getProperty(Property.DTSTAMP).get().getValue(), XSDDatatype.XSDdateTime));
             //integrate platform territoire room url to the location
-            try {
-                String[] parts = component.getProperty(Property.LOCATION).get().getValue().split(",");
-                iri.addProperty(ResourceFactory.createProperty(schema + "address"), component.getProperty(Property.LOCATION).get().getValue());
-                System.out.println(component.getProperty(Property.LOCATION).get().getValue());
-                for (int k = 0; k < parts.length; k++) {
-                    String numberOnly = parts[k].replaceAll("[^0-9]", "");
-                    if (numberOnly.length() == 3) {
-                        location  =  "https://territoire.emse.fr/kg/emse/fayol/" + numberOnly.charAt(0) + "ET/" + numberOnly ;
-                        iri.addProperty(ResourceFactory.createProperty(schema + "location"), model.createResource("https://territoire.emse.fr/kg/emse/fayol/" + numberOnly.charAt(0) + "ET/" + numberOnly));
-                    }
-                }
-            }catch (Exception e){
-                continue;
-            }
+
+
 
 
             URL sparqlEndPoint  = new URL("https://territoire.emse.fr/ldp/aruntest23/");

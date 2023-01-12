@@ -31,7 +31,7 @@ public class EventsInSaintEtienneNotCoursesServices {
 
         httpConn.setDoOutput(true);
         OutputStreamWriter writer = new OutputStreamWriter(httpConn.getOutputStream());
-        writer.write("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ldp: <http://www.w3.org/ns/ldp#>\n               \nselect ?sub\nWHERE   \n {\n?sub schema:location ?obj ;\n      schema:editor ?eitor .\n?obj schema:address ?address . \n?address  schema:addressLocality ?cityName .\nFILTER (?eitor = \"Arun\"@en && ?cityName = \"Saint-Étienne\") .\nFILTER NOT EXISTS { ?sub rdf:type schema:CourseInstance .}\n}");
+        writer.write("");
         writer.flush();
         writer.close();
         httpConn.getOutputStream().close();
@@ -60,14 +60,25 @@ public class EventsInSaintEtienneNotCoursesServices {
 
         String sub = "http://localhost:8080/Event/saintetienne/notcourses";
         Resource subUrl  =  model.createResource(sub);
-
-
+        subUrl.addProperty(RDF.type, ResourceFactory.createProperty(schema + "EventSeries"));
+        subUrl.addProperty(ResourceFactory.createProperty(schema + "category"), model.createTypedLiteral("Events that are Not Courses in Saint-Etienne", XSDDatatype.XSDstring));
+        subUrl.addProperty(ResourceFactory.createProperty(rdfs + "comment"), model.createTypedLiteral("Events in saint-etienne that are not a courses ", XSDDatatype.XSDstring));
+        Resource blankNode =  model.createResource();
         for (int i = 0, size = jsonArray.length(); i < size; i++) {
 
-            subUrl.addProperty(RDF.type, ResourceFactory.createProperty(schema + "EventSeries"));
-            subUrl.addProperty(ResourceFactory.createProperty(schema + "category"), model.createTypedLiteral("Events that are Not Courses in Saint-Etienne", XSDDatatype.XSDstring));
-            subUrl.addProperty(ResourceFactory.createProperty(rdfs + "comment"), model.createTypedLiteral("Events in saint-etienne that are not a courses ", XSDDatatype.XSDstring));
-            subUrl.addProperty(ResourceFactory.createProperty(schema + "events"), model.createResource(jsonArray.getJSONObject(i).getJSONObject("sub").get("value").toString()));
+            if( model.listSubjectsWithProperty(ResourceFactory.createProperty(schema + "url"),model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI)).toList().isEmpty())
+            {
+                Resource blankNode1 =  model.createResource();
+                blankNode.addProperty(ResourceFactory.createProperty(schema + "event"), blankNode1) ;
+                blankNode1.addProperty(RDF.type, ResourceFactory.createProperty(schema + "Event"));
+                blankNode1.addProperty(ResourceFactory.createProperty(schema + "url"), model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI));
+                blankNode1.addProperty(ResourceFactory.createProperty(schema + "sameAs"), model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString(), XSDDatatype.XSDanyURI));
+
+            }else {
+                model.add(model.listSubjectsWithProperty(ResourceFactory.createProperty(schema + "url"),model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI)).toList().get(0),ResourceFactory.createProperty(schema + "sameAs") ,  model.createTypedLiteral(jsonArray.getJSONObject(i).getJSONObject("uri").get("value").toString(), XSDDatatype.XSDanyURI));
+                //blankNode1.addProperty(ResourceFactory.createProperty(schema + "sameAs"), model.createResource(jsonArray.getJSONObject(i).getJSONObject("sameAs").get("value").toString()));
+            }
+
         }
 
 
