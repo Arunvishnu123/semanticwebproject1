@@ -174,7 +174,7 @@ public class PublishICSCalendarData {
                 String query = String.format("PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
                         "PREFIX schema: <http://schema.org/>\n" +
                         "SELECT ?url {  \n" +
-                        " ?url  schema:editor ?editor;\n" +
+                        " ?url  schema:editor ?editor;\n" + 
                         "        schema:endDate ?endDate;\n" +
                         "        schema:startDate ?startDate;\n" +
                         "        schema:location ?loc ;\n" +
