@@ -25,7 +25,7 @@ Convert events extracted from ICS file(unstructured) to RDF and web sites(json-l
 
 ### Convert any ICS file to rdf and publish it in Territorie Platform.
 
-![ScreenShot](../images/uploadurl.PNG)
+![ScreenShot](./images/uploadurl.PNG)
 
 ```python 
 
