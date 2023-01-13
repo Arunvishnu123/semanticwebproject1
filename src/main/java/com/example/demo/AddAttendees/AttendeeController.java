@@ -16,7 +16,7 @@ public class AttendeeController {
     private AddAttendeesService addAttendee ;
 
     @PostMapping(value = "/new",produces={"text/turtle"})
-    public String webPageDataExtractor(AttendeeModel attendeeModel) throws ParserException, IOException {
+    public String addAttendee(AttendeeModel attendeeModel) throws ParserException, IOException {
         return addAttendee.addAttendee(attendeeModel.getAttendeeName(), attendeeModel.getCourseName(), attendeeModel.getDate());
     }
 }

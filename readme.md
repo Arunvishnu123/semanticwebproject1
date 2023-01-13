@@ -27,13 +27,18 @@ Convert events extracted from ICS file(unstructured) to RDF and web sites(json-l
 
 Enter the location of the ics file and string identifier to identify this dataset. I used ical4j library to parse the ics file and convert it to RDF
 
-Please check this link to see the generated rdf graphs from the ics file -  https://territoire.emse.fr/ldp/arunfinal/
+Please check this link to see the generated rdf graphs from the ics file -  https://territoire.emse.fr/ldp/arunfinal/.
+
+- [ ] Run the application and go to this URL http://localhost:8080/swagger-ui/index.html#/publish-controller/uploadFileUsingPOST
 
 ![ScreenShot](./images/uploadurl.PNG)
 
-While creating RDF graphs the event check in platform territiore for the similar events. If it is available link the both the events using owl:sameAs in both the directions.
 
-- [ ] Information of classroom are already published in platform territoire and it is available in the format https://territoire.emse.fr/kg/emse/fayol/floorname/roomNo  where floorname can be 1ET,2ET etc and roomNo can be 104,212 etc.  I linked this url with the help of schema:location while using an  ics file downloaded from the cps2 time table. 
+
+- [ ] Information of classroom are already published in platform territoire and it is available in the format "https://territoire.emse.fr/kg/emse/fayol/floorname/roomNo"  where floorname can be 1ET,2ET etc and roomNo can be 104,212 etc.  I linked this url with the help of https://schema.org/location while using an  ics file downloaded from the cps2 time table. 
+![ScreenShot](./images/loca.PNG)
+
+- [ ] While creating RDF graphs the event check in platform territiore for the similar events. If it is available, then link the both the events using owl:sameAs in both the directions.
 
 ###### SPARQL Ask query to check if any similar events are alreeady publish in platform territoire
 ```python 
@@ -46,7 +51,7 @@ ASK {
         schema:location ?loc ;
         schema:startTime ?startTime ;
         schema:endTime ?endTime ;
-FILTER  (?editor = "Arun"@en && regex(str(?loc), "%s") &&  ?endDate = "%s"^^xsd:date &&  ?startDate = "%s"^^xsd:date && ?startTime = "%s"^^xsd:time && ?endTime = "%s"^^xsd:time )
+FILTER  (?editor = "Arun"@en && regex(str(?loc), "https://territoire.emse.fr/kg/emse/fayol/2ET/212") &&  ?endDate = "2023-01-06"^^xsd:date &&  ?startDate = "2023-01-06"^^xsd:date && ?startTime = "11:00:00"^^xsd:time && ?endTime = "11:00:00"^^xsd:time )
  }
 ```     
 
@@ -61,9 +66,90 @@ SELECT ?url {
         schema:location ?loc ;
         schema:startTime ?startTime ;
         schema:endTime ?endTime ;
-FILTER  (?editor = "Arun"@en && regex(str(?loc), "%s") &&  ?endDate = "%s"^^xsd:date &&  ?startDate = "%s"^^xsd:date && ?startTime = "%s"^^xsd:time && ?endTime = "%s"^^xsd:time )
+FILTER  (?editor = "Arun"@en && regex(str(?loc), "https://territoire.emse.fr/kg/emse/fayol/2ET/212") &&  ?endDate = "2023-01-06"^^xsd:date &&  ?startDate = "2023-01-06"^^xsd:date && ?startTime = "11:00:00"^^xsd:time && ?endTime = "11:00:00"^^xsd:time )
  }
  ```  
-- [ ] Then it send a get request to the selected URL for the ETAG and the triples contained in hat URL 
+- [ ] Then it send a get request to the selected URL for the ETAG and the triples contained in that URL 
 - [ ] Add the URL of the new event using owl:sameAs
-- [ ] Republish the triples to the platform territoire using put request
+- [ ] Republish the triples to the platform territoire using put request.
+
+
+### Extract json-ld from website and publish the data in Platform Territoire.
+
+- [ ] Run the application and go to this url http://localhost:8080/swagger-ui/index.html#/publish-controller/attachWebURLUsingPOST
+
+![ScreenShot](./images/webrdfextraction.PNG)
+
+- [ ] Here I used JSOUP library(https://jsoup.org/) which is web scrapping java library for extracting data from the webites. I used <script/> tag with content-type "application/json-ld"  for the extraction. 
+
+- [ ] While creating RDF graphs the event check in platform territiore for the similar events. If it is available, then link the both the events using owl:sameAs in both the directions.
+
+###### SPARQL Ask query to check if any similar events are alreeady publish in platform territoire
+```python 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+ASK {  
+ ?uri  schema:editor ?editor;
+        schema:startDate ?startDate;
+        schema:name ?eventName ;
+        schema:endDate ?endDate ;
+        schema:location ?loc.
+?loc schema:name ?placeName ;  
+FILTER  (?editor = "Arun"@en &&  ?endDate = "2023-12-28"^^schema:Date &&  ?startDate = "2023-01-12"^^schema:Date && ?eventName = "Marché de Chavanelle" && ?placeName = "Place Chavanelle")
+}
+``` 
+
+###### If the ASK query return true then it get the URI of the similar events using SELECT query 
+```python 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+SELECT ?url {  
+ ?url  schema:editor ?editor;
+        schema:startDate ?startDate;
+        schema:name ?eventName ;
+        schema:endDate ?endDate ;
+        schema:location ?loc.
+?loc schema:name ?placeName ;  
+FILTER  (?editor = "Arun"@en &&  ?endDate = "2023-12-28"^^schema:Date &&  ?startDate = "2023-01-12"^^schema:Date && ?eventName = "Marché de Chavanelle" && ?placeName = "Place Chavanelle")
+}
+ ```  
+- [ ] Then it send a get request to the selected URL for the ETAG and the triples contained in that URL 
+- [ ] Add the URL of the new event using owl:sameAs
+- [ ] Republish the triples to the platform territoire using put request.
+
+
+
+### Add attendees for the selected course
+
+- [ ] User need to enter the course name, start data and attendee name.  Based on this information the with the help of a SPARQL query I find the URL of the corresponding events.  Go to this url to enter these information -  http://localhost:8080/swagger-ui/index.html#/attendee-controller/
+addAttendeeUsingPOST 
+
+![ScreenShot](./images/addattendee.PNG)
+- [ ] Then send a get request to get the ETAG and triples 
+- [ ] Add the attendee and republish the event using put request 
+
+
+![ScreenShot](./images/addattendeerdf.PNG)
+
+###### SPARQL query to get the URI from course name and startDate
+```python 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+SELECT ?url ?serialNumber
+ WHERE {  
+      ?url schema:accessibilitySummary ?summary ;
+       schema:startDate ?startDate ;
+       schema:editor ?eitor ;
+        FILTER (regex(?summary, "%s" , "i" ) && (?startDate = "%s"^^xsd:date) && (?eitor = "Arun"@en)) .
+ }
+ ``` 
+
+
+ 
+
+
+
+
+
+
+
