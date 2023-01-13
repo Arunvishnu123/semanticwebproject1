@@ -70,7 +70,7 @@ public class WebScrapperRDFExtractor {
             //find similar resource
 
             try {
-                URL sparqlEndPoint = new URL("https://territoire.emse.fr/ldp/aruntest23/");
+                URL sparqlEndPoint = new URL("https://territoire.emse.fr/ldp/");
                 HttpURLConnection httpConnection = (HttpURLConnection) sparqlEndPoint.openConnection();
                 httpConnection.setRequestMethod("POST");
 
@@ -109,7 +109,7 @@ public class WebScrapperRDFExtractor {
 
                 if (xmlJSONObj.getJSONObject("sparql").get("boolean").toString() == "true") {
 
-                    URL getSparqlEndpoint = new URL("https://territoire.emse.fr/ldp/aruntest23/");
+                    URL getSparqlEndpoint = new URL("https://territoire.emse.fr/ldp/");
                     HttpURLConnection getHTTPURL = (HttpURLConnection) getSparqlEndpoint.openConnection();
                     getHTTPURL.setRequestMethod("POST");
 

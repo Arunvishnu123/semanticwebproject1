@@ -27,7 +27,7 @@ public class AddAttendeesService {
 
 
 
-        URL url = new URL("https://territoire.emse.fr/ldp/aruntest23/");
+        URL url = new URL("https://territoire.emse.fr/ldp/");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("POST");
 

@@ -27,7 +27,7 @@ Convert events extracted from ICS file(unstructured) to RDF and web sites(json-l
 
 ## Features Implemented
 
-### Convert any ICS file to rdf and publish it in Territorie Platform.
+# Convert any ICS file to rdf and publish it in Territorie Platform.
 
 Enter the location of the ics file and string identifier to identify this dataset. I used ical4j library to parse the ics file and convert it to RDF
 
@@ -85,7 +85,7 @@ FILTER  (?editor = "Arun"@en && regex(str(?loc), "https://territoire.emse.fr/kg/
 
 ![ScreenShot](./images/owlsamesas2.PNG)
 
-### Extract json-ld from website and publish the data in Platform Territoire.
+# Extract json-ld from website and publish the data in Platform Territoire.
 
 - [ ] Run the application and go to this url http://localhost:8080/swagger-ui/index.html#/publish-controller/attachWebURLUsingPOST
 
@@ -130,7 +130,7 @@ FILTER  (?editor = "Arun"@en &&  ?endDate = "2023-12-28"^^schema:Date &&  ?start
 
 
 
-### Add attendees for the selected course
+# Add attendees for the selected course
 
 - [ ] User need to enter the course name, start data and attendee name.  Based on this information the with the help of a SPARQL query I find the URL of the corresponding events.  Go to this url to enter these information -  http://localhost:8080/swagger-ui/index.html#/attendee-controller/
 addAttendeeUsingPOST 
@@ -155,11 +155,14 @@ SELECT ?url ?serialNumber
  }
  ``` 
 
- ### Filter events in saint-etienne that are courses
+ # Filter events in saint-etienne that are courses
+
+
 
  - [ ] I added a class https://schema.org/CourseInstance to seperate the courses and other event. 
 
  - [ ] Filter these events using the below REST API(Get Request) -  go to this link http://localhost:8080/swagger-ui/index.html#/event-controller/getEventsThatAreCoursesUsingGET  and execute 
+ - [ ] Is available in this REST API http://localhost:8080/Event/saintetienne/courses
 
  ![ScreenShot](./images/courses.PNG)
 
@@ -203,7 +206,11 @@ FILTER (?editor = "Arun"@en && regex(?serialNumber,"sem-", "i")) .
 
  ``` 
 
-  ### Filter events in saint-etienne that are not courses
+# Filter events in saint-etienne that are not courses
+
+ - [ ] Is available in this REST API -  http://localhost:8080/Event/saintetienne/notCourses
+
+
  ```python
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <http://schema.org/>
@@ -224,7 +231,35 @@ FILTER NOT EXISTS { ?uri rdf:type schema:CourseInstance .}
 }
  ```
 
-  ### List of upcoming events 
+- [ ] Response
+ 
+
+```python
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+<http://localhost:8080/Event/saintetienne/courses>
+      a                schema:EventSeries ;
+        schema:category  "Events that are Not Courses in Saint-Etienne" ;
+        rdfs:comment     "Events in saint-etienne that are not a courses " ;
+        [ schema:event  [ a           schema:Event ;
+                  schema:url  "https://territoire.emse.fr/ldp/arunfinal/examsem-14/"^^xsd:anyURI ;
+                  owl:sameAs  "https://territoire.emse.fr/ldp/arunfinal/sem-course-event-14/"^^xsd:anyURI , "https://territoire.emse.fr/ldp/arunraveendransheelafinal/course-event-14/"^^xsd:anyURI
+                ] ;
+         schema:event  [ a           schema:Event ;
+                  schema:url  "https://territoire.emse.fr/ldp/arunfinal/sem-course-event-64/"^^xsd:anyURI ;
+                  owl:sameAs  "https://territoire.emse.fr/ldp/arunraveendransheelafinal/course-event-64/"^^xsd:anyURI
+                ] ;
+
+    ] .
+
+ ``` 
+# List of upcoming events 
+
+- [ ] Go to this location http://localhost:8080/swagger-ui/index.html#/upcoming-events-controller/getEventsByDateUsingGET and enter a date 
+  ![ScreenShot](./images/eventsdate.PNG)
+
  ```python
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <http://schema.org/>
@@ -242,10 +277,36 @@ FILTER (?editor = "Arun"@en && ?startDate > "2023-01-01"^^xsd:date && regex(?ser
  }
  ```
 
+ - [ ] Upcoming events response are shown below 
 
-  ### List of events in a particular room 
+ ```python
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+<http://localhost:8080/Event/saintetienne/courses>
+   <http://localhost:8080/upcomingevents/2023-01-01>
+        a                 schema:EventSeries ;
+        schema:category   "Upcoming Events" ;
+         schema:startDate  "2023-01-01"^^xsd:date ;
+        rdfs:comment      "Upcoming Events from the selected date by the user" ;
+        [ schema:event  [ a           schema:Event ;
+                  schema:url  "https://territoire.emse.fr/ldp/arunfinal/examsem-14/"^^xsd:anyURI ;
+                  owl:sameAs  "https://territoire.emse.fr/ldp/arunfinal/sem-course-event-14/"^^xsd:anyURI , "https://territoire.emse.fr/ldp/arunraveendransheelafinal/course-event-14/"^^xsd:anyURI
+                ] ;
+         schema:event  [ a           schema:Event ;
+                  schema:url  "https://territoire.emse.fr/ldp/arunfinal/sem-course-event-64/"^^xsd:anyURI ;
+                  owl:sameAs  "https://territoire.emse.fr/ldp/arunraveendransheelafinal/course-event-64/"^^xsd:anyURI
+                ] ;
+
+    ] .
+
+```
+
+# List of events in a particular room 
 
    ![ScreenShot](./images/getroom.PNG)
+
  ```python
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <http://schema.org/>
@@ -259,7 +320,7 @@ FILTER  (?editor = "Arun"@en && regex(str(?loc), "104") && regex(?serialNumber, 
  }
  ```
 
-  ### List of attendees for an course
+# List of attendees for an course
 
   get the list of attendeed  -  http://localhost:8080/swagger-ui/index.html#/get-event-controller/getAttendeesOfAEventsUsingGET
  ![ScreenShot](./images/gettattend.PNG)
@@ -296,7 +357,7 @@ FILTER (?editor = "Arun"@en && regex(?serialNumber,"sem-", "i") && regex(?summar
         schema:event     <https://territoire.emse.fr/ldp/arunfinal/sem-course-event-1/> .
 
  ```
-  ### SHACL validation for an Event 
+# SHACL validation for an Event 
 
   - [ ] SHACL validation is based serial number for each event 
 
@@ -403,7 +464,7 @@ schema:Event
     ].
 
  ```
-  ### SHACL validation to check that an event is organized by UJM or EMSE
+# SHACL validation to check that an event is organized by UJM or EMSE
 
   ![ScreenShot](./images/oragnizer.PNG)
 
