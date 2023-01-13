@@ -21,6 +21,7 @@ schema:Event
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:name "start date" ;
+        sh:severity sh:Violation ;
     ] ;
 
   sh:property [
@@ -36,6 +37,7 @@ schema:Event
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:name "end date" ;
+        sh:severity sh:Violation ;
     ] ;
   sh:property [
         sh:path schema:startTime ;
@@ -49,7 +51,8 @@ schema:Event
     ) ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:name "start date" ;
+        sh:name "start time" ;
+         sh:severity sh:Violation ;
     ] ;
 
   sh:property [
@@ -65,4 +68,30 @@ schema:Event
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:name "end time" ;
-    ] .
+        sh:severity sh:Violation ;
+    ] ;
+  sh:property [
+        sh:path schema:location ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "location" ;
+        sh:severity sh:Violation ;
+        sh:pattern "^https://territoire.emse.fr/kg/emse/fayol/";
+        sh:flags "i" ;
+        sh:nodeKind sh:IRI ;
+    ] ;
+ sh:property [
+        sh:path schema:instructor ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "instructor" ;
+        sh:severity sh:Warning ;
+        sh:uniqueLang true ;
+    ];
+ sh:property [
+        sh:path schema:organizer ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "organizer" ;
+        sh:severity sh:Warning ;
+    ].
