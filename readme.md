@@ -200,6 +200,231 @@ FILTER (?editor = "Arun"@en && regex(?serialNumber,"sem-", "i")) .
  ``` 
 
   ### Filter events in saint-etienne that are not courses
+ ```python
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+               
+select ?uri ?sameAs
+WHERE   
+ {
+?uri schema:location ?obj ;
+    schema:serialNumber ?serialNumber ; 
+    owl:sameAs ?sameAs;
+      schema:editor ?editor .
+?obj schema:address ?address . 
+?address  schema:addressLocality ?cityName .
+FILTER (?editor = "Arun"@en && ?cityName = "Saint-Étienne" && regex(?serialNumber,"sem-", "i")) .
+FILTER NOT EXISTS { ?uri rdf:type schema:CourseInstance .}
+}
+ ```
+
+  ### List of upcoming events 
+ ```python
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>              
+select  ?uri  ?sameAs
+WHERE   
+ {
+?uri a schema:CourseInstance;
+schema:editor ?editor ;
+schema:startDate ?startDate;
+schema:serialNumber ?serialNumber ; 
+owl:sameAs ?sameAs ; 
+FILTER (?editor = "Arun"@en && ?startDate > "2023-01-01"^^xsd:date && regex(?serialNumber,"sem-", "i")) .
+ }
+ ```
+
+
+  ### List of events in a particular room 
+
+   ![ScreenShot](./images/getroom.PNG)
+ ```python
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT ?uri ?sameAs {  
+ ?uri  schema:editor ?editor;
+        schema:location ?loc ;
+        owl:sameAs ?sameAs ;
+               schema:serialNumber ?serialNumber ; 
+FILTER  (?editor = "Arun"@en && regex(str(?loc), "104") && regex(?serialNumber, "sem-", "i" ))
+ }
+ ```
+
+  ### List of attendees for an course
+
+  get the list of attendeed  -  http://localhost:8080/swagger-ui/index.html#/get-event-controller/getAttendeesOfAEventsUsingGET
+ ![ScreenShot](./images/gettattend.PNG)
+
+ ```python
+ PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>               
+select ?uri ?attendee
+WHERE   
+ {
+?uri
+    schema:serialNumber ?serialNumber ; 
+      schema:editor ?editor ;
+      schema:startDate ?startDate ; 
+      schema:accessibilitySummary ?summary ; 
+      schema:attendees ?attendees. 
+?attendees schema:attendee ?attendee ;
+FILTER (?editor = "Arun"@en && regex(?serialNumber,"sem-", "i") && regex(?summary,"semantic", "i") && ?startDate="2022-12-16"^^xsd:date) .
+}
+```
+
+- [ ] Response 
+
+```python
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+<http://localhost:8080/course/attendees/>
+        schema:attendee  [ a                schema:Person ;
+                           schema:attendee  "VishnuArun" , "ArunVishnu" , "vishnu" , "Arun"
+                         ] ;
+        schema:event     <https://territoire.emse.fr/ldp/arunfinal/sem-course-event-1/> .
+
+ ```
+  ### SHACL validation for an Event 
+
+  - [ ] SHACL validation is based serial number for each event 
+
+   ![ScreenShot](./images/shaclvalidation.PNG)
+
+
+```python
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+schema:Event
+    a sh:NodeShape ;
+    sh:targetClass schema:Event ;
+    sh:property [
+        sh:path schema:startDate ;
+        sh:or (
+      [
+        sh:datatype xsd:date ;
+      ]
+      [
+        sh:datatype xsd:dateTime ;
+      ]
+    ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "start date" ;
+        sh:severity sh:Violation ;
+    ] ;
+
+  sh:property [
+        sh:path schema:endDate ;
+        sh:or (
+      [
+        sh:datatype xsd:date ;
+      ]
+      [
+        sh:datatype xsd:dateTime ;
+      ]
+    ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "end date" ;
+        sh:severity sh:Violation ;
+    ] ;
+  sh:property [
+        sh:path schema:startTime ;
+        sh:or (
+      [
+        sh:datatype xsd:time ;
+      ]
+      [
+        sh:datatype xsd:dateTime ;
+      ]
+    ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "start time" ;
+         sh:severity sh:Violation ;
+    ] ;
+
+  sh:property [
+        sh:path schema:endTime ;
+        sh:or (
+      [
+        sh:datatype xsd:time ;
+      ]
+      [
+        sh:datatype xsd:dateTime ;
+      ]
+    ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "end time" ;
+        sh:severity sh:Violation ;
+    ] ;
+  sh:property [
+        sh:path schema:location ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "location" ;
+        sh:severity sh:Violation ;
+        sh:pattern "^https://territoire.emse.fr/kg/emse/fayol/";
+        sh:flags "i" ;
+        sh:nodeKind sh:IRI ;
+    ] ;
+ sh:property [
+        sh:path schema:instructor ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "instructor" ;
+        sh:severity sh:Warning ;
+        sh:languageIn "@en" ; 
+    ];
+ sh:property [
+        sh:path schema:organizer ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "organizer" ;
+        sh:severity sh:Warning ;
+    ].
+
+ ```
+  ### SHACL validation to check that an event is organized by UJM or EMSE
+
+  ![ScreenShot](./images/oragnizer.PNG)
+
+ ```python
+  @prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+schema:EventShape
+	a sh:NodeShape ;
+	sh:targetClass schema:Event ;
+	sh:property [
+		sh:path schema:organizer ;
+		sh:minCount 1 ;
+		sh:maxCount 1 ;
+                sh:or (
+                       [
+                        sh:hasValue "UJM" ;
+                       ]
+                       [
+                        sh:hasValue "EMSE" ;
+                       ]
+                       ) ;
+	               ] . 
+```
 
 
 
