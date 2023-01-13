@@ -23,7 +23,7 @@ import java.util.Scanner;
 public class EventsInSaintEtienneNotCoursesServices {
 
     public  String eventsThatAreNotCourses() throws IOException {
-        URL url = new URL("https://territoire.emse.fr/ldp/aruntest23/");
+        URL url = new URL("https://territoire.emse.fr/ldp/");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("POST");
 

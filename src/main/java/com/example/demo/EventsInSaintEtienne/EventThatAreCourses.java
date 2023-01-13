@@ -23,7 +23,7 @@ import java.util.Scanner;
 @Service
 public class EventThatAreCourses {
     public  String eventsThatAreCourses() throws IOException {
-        URL url = new URL("https://territoire.emse.fr/ldp/aruntest23/");
+        URL url = new URL("https://territoire.emse.fr/ldp/");
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("POST");
 
@@ -45,7 +45,7 @@ public class EventThatAreCourses {
                 "          schema:serialNumber ?serialNumber ; \n" +
                 "          owl:sameAs ?sameAs ; \n" +
                 "FILTER (?editor = \"Arun\"@en && regex(?serialNumber,\"sem-\", \"i\")) .\n" +
-                " }");
+                "}");
         writer.flush();
         writer.close();
         httpConn.getOutputStream().close();

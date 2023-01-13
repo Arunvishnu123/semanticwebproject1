@@ -74,6 +74,13 @@ FILTER  (?editor = "Arun"@en && regex(str(?loc), "https://territoire.emse.fr/kg/
 - [ ] Republish the triples to the platform territoire using put request.
 
 
+- [ ] Screenshot for showing owl:sameAs -  Event URL -  https://territoire.emse.fr/ldp/arunfinal/sem-course-event-1/
+![ScreenShot](./images/owlSameas.PNG)
+
+- [ ] Screenshot for showing owl:sameAs -  Event URL -  https://territoire.emse.fr/ldp/arunraveendransheelafinal/course-event-1/
+
+![ScreenShot](./images/owlsamesas2.PNG)
+
 ### Extract json-ld from website and publish the data in Platform Territoire.
 
 - [ ] Run the application and go to this url http://localhost:8080/swagger-ui/index.html#/publish-controller/attachWebURLUsingPOST
@@ -144,8 +151,62 @@ SELECT ?url ?serialNumber
  }
  ``` 
 
+ ### Filter events in saint-etienne that are courses
 
- 
+ - [ ] I added a class https://schema.org/CourseInstance to seperate the courses and other event. 
+
+ - [ ] Filter these events using the below REST API(Get Request) -  go to this link http://localhost:8080/swagger-ui/index.html#/event-controller/getEventsThatAreCoursesUsingGET  and execute 
+
+ ![ScreenShot](./images/courses.PNG)
+
+```python 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>              
+select  ?uri ?sameAs
+WHERE   
+ {
+?uri a schema:CourseInstance;
+           schema:editor ?editor ;
+          schema:serialNumber ?serialNumber ; 
+          owl:sameAs ?sameAs ; 
+FILTER (?editor = "Arun"@en && regex(?serialNumber,"sem-", "i")) .
+ }
+ ``` 
+- [ ] Again the sparql result is converted to rdf graph and it is available as response
+- [ ] Below shows a example rdf graph when you execute this REST API
+
+ ```python
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+<http://localhost:8080/Event/saintetienne/courses>
+        a                schema:EventSeries ;
+        schema:category  "Events that are  Courses in Saint-Etienne" ;
+        rdfs:comment     "Events in saint-etienne that are courses " ;
+        [ schema:event  [ a           schema:Event ;
+                  schema:url  "https://territoire.emse.fr/ldp/arunfinal/examsem-14/"^^xsd:anyURI ;
+                  owl:sameAs  "https://territoire.emse.fr/ldp/arunfinal/sem-course-event-14/"^^xsd:anyURI , "https://territoire.emse.fr/ldp/arunraveendransheelafinal/course-event-14/"^^xsd:anyURI
+                ] ;
+         schema:event  [ a           schema:Event ;
+                  schema:url  "https://territoire.emse.fr/ldp/arunfinal/sem-course-event-64/"^^xsd:anyURI ;
+                  owl:sameAs  "https://territoire.emse.fr/ldp/arunraveendransheelafinal/course-event-64/"^^xsd:anyURI
+                ] ;
+
+    ] .
+
+ ``` 
+
+  ### Filter events in saint-etienne that are not courses
+
+
+
+
+
+
+
 
 
 
