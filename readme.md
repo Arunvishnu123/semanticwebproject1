@@ -2,6 +2,10 @@
 
 Convert events extracted from ICS file(unstructured) to RDF and web sites(json-ld) and publish it to platform territoire.
 
+## Group Member Name 
+
+- [ ] Arun Raveendran Nair Sheela 
+
 ## Technologies Used 
 - [ ] Java as a programming lanaguage 
 - [ ] Spring boot for creating REST API
