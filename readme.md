@@ -21,7 +21,7 @@ Convert events extracted from ICS file(unstructured) to RDF and web sites(json-l
 - [ ] Open the project using any of the java IDE
 - [ ] Run the application 
 - [ ] Go to the location http://localhost:8080/swagger-ui/index.html#/ to interact with the application 
-- [ ] I used Swagger UI as front-end for interatcting with the platform
+- [ ] I used Swagger UI as front-end for interacting with the platform
 
 
 
@@ -44,7 +44,7 @@ Please check this link to see the generated rdf graphs from the ics file -  http
 
 - [ ] While creating RDF graphs the event check in platform territiore for the similar events. If it is available, then link the both the events using owl:sameAs in both the directions.
 
-###### SPARQL Ask query to check if any similar events are alreeady publish in platform territoire
+###### SPARQL Ask query to check if any similar events are already publish in platform territoire
 ```python 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX schema: <http://schema.org/>
